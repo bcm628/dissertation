@@ -42,9 +42,9 @@ df_iemocap['start_time'] = starts
 df_iemocap['end_time'] = ends
 df_iemocap['wav_file'] = wav_files
 df_iemocap['emotion'] = emotions
-df_iemocap['val'] = vals
-df_iemocap['act'] = acts
-df_iemocap['dom'] = doms
+df_iemocap['valence'] = vals
+df_iemocap['activation'] = acts
+df_iemocap['dominance'] = doms
 
 df_iemocap.tail()
 
