@@ -18,5 +18,5 @@ for directory in os.listdir(data_path):
             with open(os.path.join(eval_dir, f)) as txt:
                 txt_file = txt.read()
             info_lines = re.findall(info_line, txt_file)
-            for line in infolines[1:10]:
+            for line in info_lines[1:10]:
                 print(line.strip().split('\t'))
