@@ -1,3 +1,5 @@
+#change back to csv, add argument -instname with .wav file name
+
 import os
 
 user_path="/afs/inf.ed.ac.uk/user/s19/s1940488/dissertation"
