@@ -46,7 +46,6 @@ df_iemocap['valence'] = vals
 df_iemocap['activation'] = acts
 df_iemocap['dominance'] = doms
 
-df_iemocap.tail()
 
 
 df_iemocap.to_csv('{}/IEMOCAP_labels.csv'.format(user_path), index=False)
