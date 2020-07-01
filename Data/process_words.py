@@ -19,13 +19,16 @@ def make_utterance_csv(data_path):
             for file in os.listdir(tr_dir):
                 with open(os.path.join(tr_dir, file)) as tr_txt:
                     for line in tr_txt:
-                        line = re.split('[\s-]', line)
-                        line[1] = line[1].strip("[")
-                        line[1] = float(line[1])
-                        line[2] = line[2].strip("]:")
-                        line[2] = float(line[2])
-                        line[3:] = [line[3:]]
-                        line_list.append(line)
+                        if line.startswith(('F', 'M')):
+                            continue
+                        else:
+                            line = re.split('[\s-]', line)
+                            line[1] = line[1].strip("[")
+                            line[1] = float(line[1])
+                            line[2] = line[2].strip("]:")
+                            line[2] = float(line[2])
+                            line[3:] = [line[3:]]
+                            line_list.append(line)
     utterance_df = pd.DataFrame(line_list, columns=["filename", "start_time", "end_time", "utterance"])
     print(utterance_df)
     return utterance_df
