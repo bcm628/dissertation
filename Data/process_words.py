@@ -20,7 +20,7 @@ for directory in os.listdir(data_path):
             for file in lab:
                 with open(os.path.join(lab_dir, file)) as lab_file:
                     for line in lab_file:
-                        line = line.readlines()
+                        line = line.split()
                         lab_list.append(line)
 
 lab_df = pd.DataFrame(lab_list, columns=["start_time", "end_time", "filename"])
