@@ -19,13 +19,15 @@ def make_utterance_csv(data_path):
             for file in os.listdir(tr_dir):
                 with open(os.path.join(tr_dir, file)) as tr_txt:
                     for line in tr_txt:
-                        line = line.split()
-                        line[1].strip("[]:")
-                        line[1].split("-")
+                        line = re.split('[\s-]', line)
+                        line[1]=line[1].strip("[")
+                        line[1] = float(line[1])
+                        line[2]=line[2].strip("]:")
+                        line[2] = float(line[2])
                         print(line)
                         exit()
 
-
+make_utterance_csv(data_path)
     #                     lab_list.append(line)
     # lab_df = pd.DataFrame(lab_list, columns=["start_time", "end_time", "filename"])
     # lab_df["start_time"] = pd.to_numeric(lab_df["start_time"])
