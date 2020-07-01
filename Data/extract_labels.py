@@ -1,5 +1,6 @@
 #extracts emotion labels from IEMOCAP data
-#based on code by Demfier
+#based on code by Demfier:
+#https://github.com/Demfier/multimodal-speech-emotion-recognition
 
 import re
 import os
