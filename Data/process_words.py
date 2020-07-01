@@ -15,16 +15,16 @@ lab_list = []
 
 for directory in os.listdir(data_path):
     if directory.startswith("Session"):
-        lab_dir = os.path.join(data_path, directory, "/dialog/lab")
-        for lab in lab_dir:
-            for file in lab:
-                with open(os.path.join(lab_dir, file)) as lab_file:
+        lab_dir = os.path.join(data_path, directory, "dialog/lab")
+        for lab in os.listdir(lab_dir):
+            for file in os.listdir(os.path.join(lab_dir, lab)):
+                with open(os.path.join(lab_dir, lab, file)) as lab_file:
                     for line in lab_file:
                         line = line.split()
                         lab_list.append(line)
 
 lab_df = pd.DataFrame(lab_list, columns=["start_time", "end_time", "filename"])
-print(lab_df)
+print(lab_df.to_string(index=False))
 
 
 
