@@ -12,7 +12,7 @@ user_path = "/afs/inf.ed.ac.uk/user/s19/s1940488/dissertation/IEMOCAP_words"
 # utterance_df = pd.DataFrame(columns=headers)
 
 def make_utterance_csv(data_path):
-    lab_list = []
+    line_list = []
     for directory in os.listdir(data_path):
         if directory.startswith("Session"):
             tr_dir = os.path.join(data_path, directory, "dialog/transcriptions")
@@ -20,14 +20,20 @@ def make_utterance_csv(data_path):
                 with open(os.path.join(tr_dir, file)) as tr_txt:
                     for line in tr_txt:
                         line = re.split('[\s-]', line)
-                        line[1]=line[1].strip("[")
+                        line[1] = line[1].strip("[")
                         line[1] = float(line[1])
-                        line[2]=line[2].strip("]:")
+                        line[2] = line[2].strip("]:")
                         line[2] = float(line[2])
-                        print(line)
-                        exit()
+                        line[3:] = [line[3:]]
+                        line_list.append(line)
+    utterance_df = pd.DataFrame(line_list, columns=["filename", "start_time", "end_time", "utterance"])
+    print(utterance_df)
+    return utterance_df
 
+
+#['Ses01F_script...', '1.123', '5.567', ['what', 'time', 'is', 'it?']]
 make_utterance_csv(data_path)
+
     #                     lab_list.append(line)
     # lab_df = pd.DataFrame(lab_list, columns=["start_time", "end_time", "filename"])
     # lab_df["start_time"] = pd.to_numeric(lab_df["start_time"])
