@@ -11,20 +11,45 @@ user_path = "/afs/inf.ed.ac.uk/user/s19/s1940488/dissertation/IEMOCAP_words"
 # headers = ["filename", "start_frame", "end_frame", "start_time_rel", "end_time_rel", "start_time_vid", "end_time_vid", "utterance"]
 # utterance_df = pd.DataFrame(columns=headers)
 
-lab_list = []
-
-for directory in os.listdir(data_path):
-    if directory.startswith("Session"):
-        lab_dir = os.path.join(data_path, directory, "dialog/lab")
-        for lab in os.listdir(lab_dir):
-            for file in os.listdir(os.path.join(lab_dir, lab)):
-                with open(os.path.join(lab_dir, lab, file)) as lab_file:
-                    for line in lab_file:
+def make_utterance_csv(data_path):
+    lab_list = []
+    for directory in os.listdir(data_path):
+        if directory.startswith("Session"):
+            tr_dir = os.path.join(data_path, directory, "dialog/transcriptions")
+            for file in os.listdir(tr_dir):
+                with open(os.path.join(tr_dir, file)) as tr_txt:
+                    for line in tr_txt:
                         line = line.split()
-                        lab_list.append(line)
+                        line[1].strip("[]:")
+                        line[1].split("-")
+                        print(line)
+                        exit()
 
-lab_df = pd.DataFrame(lab_list, columns=["start_time", "end_time", "filename"])
-print(lab_df.to_string(index=False))
+
+    #                     lab_list.append(line)
+    # lab_df = pd.DataFrame(lab_list, columns=["start_time", "end_time", "filename"])
+    # lab_df["start_time"] = pd.to_numeric(lab_df["start_time"])
+    # lab_df["end_time"] = pd.to_numeric(lab_df["end_time"])
+    # return lab_df
+    #print(lab_df.to_string(index=False))
+#
+# def create_utterance_csv(data_path, lab_df):
+#     for directory in os.listdir(data_path):
+#         if directory.startswith("Session"):
+#             align_dir = os.path.join(data_path, directory, 'sentences/ForcedAlignment')
+#             for folder in os.listdir(align_dir):
+#                 for file in os.listdir(os.path.join(align_dir, folder)):
+#                     if file.endswith(".wdseg"):
+#                         with open(os.path.join(align_dir, folder, file) as align_file:
+#                             align_file.readlines()
+#                             align_list = align_file[1:-1]
+
+
+
+
+
+
+
 
 
 
