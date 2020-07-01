@@ -1,6 +1,8 @@
 #process word-level data into a dataframe/csv
 #aligns utterances with timing of video for utterance level alignment
 
+#utterances still need to be processed of punctuation etc
+
 import re
 import os
 import pandas as pd
