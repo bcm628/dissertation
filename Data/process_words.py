@@ -6,12 +6,10 @@ import os
 import pandas as pd
 
 data_path = "/afs/inf.ed.ac.uk/group/corpora/large2/IEMOCAP_full_release"
-user_path = "/afs/inf.ed.ac.uk/user/s19/s1940488/dissertation/IEMOCAP_words"
+user_path = "/afs/inf.ed.ac.uk/user/s19/s1940488/dissertation/emotion_recognition/dissertation/Data"
 
-# headers = ["filename", "start_frame", "end_frame", "start_time_rel", "end_time_rel", "start_time_vid", "end_time_vid", "utterance"]
-# utterance_df = pd.DataFrame(columns=headers)
 
-def make_utterance_csv(data_path):
+def make_utterance_df(data_path):
     line_list = []
     for directory in os.listdir(data_path):
         if directory.startswith("Session"):
@@ -30,30 +28,12 @@ def make_utterance_csv(data_path):
                             line[3:] = [line[3:]]
                             line_list.append(line)
     utterance_df = pd.DataFrame(line_list, columns=["filename", "start_time", "end_time", "utterance"])
-    print(utterance_df)
+    print(utterance_df.to_string(index=False))
     return utterance_df
 
 
-#['Ses01F_script...', '1.123', '5.567', ['what', 'time', 'is', 'it?']]
-make_utterance_csv(data_path)
-
-    #                     lab_list.append(line)
-    # lab_df = pd.DataFrame(lab_list, columns=["start_time", "end_time", "filename"])
-    # lab_df["start_time"] = pd.to_numeric(lab_df["start_time"])
-    # lab_df["end_time"] = pd.to_numeric(lab_df["end_time"])
-    # return lab_df
-    #print(lab_df.to_string(index=False))
-#
-# def create_utterance_csv(data_path, lab_df):
-#     for directory in os.listdir(data_path):
-#         if directory.startswith("Session"):
-#             align_dir = os.path.join(data_path, directory, 'sentences/ForcedAlignment')
-#             for folder in os.listdir(align_dir):
-#                 for file in os.listdir(os.path.join(align_dir, folder)):
-#                     if file.endswith(".wdseg"):
-#                         with open(os.path.join(align_dir, folder, file) as align_file:
-#                             align_file.readlines()
-#                             align_list = align_file[1:-1]
+utterance_df = make_utterance_df(data_path)
+utterance_df.to_csv('{}/utterance_info.csv'.format(user_path), index=False)
 
 
 
