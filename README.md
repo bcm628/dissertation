@@ -1,10 +1,11 @@
 Dissertation Project
 ====================
 MSc Speech and Language Processing, University of Edinburgh
+Domain adaptation as feature extraction for mulitmodal emotion recognition
+
 
 Code
 ----
-Domain adaptation as feature extraction for mulitmodal emotion recognition
 
 Domain adaptation code based on pytorch_DANN by [CuthbertCai](https://github.com/CuthbertCai/pytorch_DANN "pytorch_DANN"). 
 Original code based on [Ganin and Lempitsky](https://arxiv.org/abs/1505.07818 "Domain adversarial training of neural networks"), 2015
