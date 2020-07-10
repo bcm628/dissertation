@@ -22,3 +22,7 @@ CMU-MOSEI data is publicly available and can be found [here](http://immortal.mul
 In this project, I used the final aligned data from the ACL20 Challenge.
 
 IEMOCAP data is not publicly available and requires permission to be used. I used pre-processed and aligned data from CMU. More information can be found [here](https://github.com/A2Zadeh/CMU-MultimodalSDK "github: CMU-MultimocalSDK").
+
+Updates
+-------
+This project is not currently finished.
