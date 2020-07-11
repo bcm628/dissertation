@@ -26,4 +26,4 @@ IEMOCAP data is not publicly available and requires permission to be used. I use
 
 Updates
 -------
-This project is not currently finished.
+This project is currently unfinished.
