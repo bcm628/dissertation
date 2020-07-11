@@ -53,7 +53,7 @@ class MoseiNewDataset(Data.Dataset):
             ds.acoustic[ds.acoustic == -np.inf] = 0
             ds.acoustic = ds.acoustic.clone().cpu().detach()
             ds.visual = torch.tensor(dataset[split_type]['visual'].astype(np.float32)).cpu().detach()
-            ds.y = torch.tensor(dataset[split_type]['labels_sent'].astype(np.float32)).cpu().detach()
+            ds.y = torch.tensor(dataset[split_type]['labels'].astype(np.float32)).cpu().detach()
 
     def __getitem__(self, index):
         inputLen = len(self.language[index])

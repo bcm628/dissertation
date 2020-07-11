@@ -64,17 +64,43 @@ def eval_mosi(split, output_all, label_all):
     print("\t%s exclude zero accuracy: %f" % (split, ex_zero_acc))
     return mae, corr, acc, acc_7, acc_5, f1_mfn, f1_raven, f1_muit, ex_zero_acc
 
+#TODO: check this
+#based on Interpretable-Multimodal-Routing-for-Human-Multimodal-Language
+def eval_mosei(split, output_all, label_all):
+    truths = np.array(label_all) #(27972)
+    results = np.array(output_all) # (27972,2)
+    #TODO: reshape results and truths? -
+    test_preds = results.reshape((-1, 6, 2)) #(4662,6,2)
+    test_truth = truths.reshape((-1, 6)) # (4662,6)
+    f1_total = {}
+    acc_total = {}
+    for emo_ind, em in enumerate(gc.best.mosei_emos):
+        #TODO: np.argmax?
+        test_preds_i = np.argmax(test_preds[:, emo_ind], axis=1) #(4662)
+        #TODO: make binary accuracy - truth labels should be 1 or 0
+        test_truth_i = test_truth[:,emo_ind]
+        f1 = f1_score(test_truth_i, test_preds_i, average='weighted')
+        acc = accuracy_score(test_truth_i, test_preds_i)
+        f1_total[em] = f1
+        acc_total[em] = acc
+        print("\t%s %s F1 score: %f" % (split, gc.best.mosei_emos[emo_ind], f1))
+        print("\t%s %s Accuracy score: %f" % (split, gc.best.mosei_emos[emo_ind], acc))
+    return f1_total, acc_total
 
 def eval_iemocap(split, output_all, label_all):
-    truths = np.array(label_all)
-    results = np.array(output_all)
-    test_preds = results.reshape((-1, 4, 2))
-    test_truth = truths.reshape((-1, 4))
+    truths = np.array(label_all) # (3752,)
+    results = np.array(output_all) #(3752, 2)
+    # print("truths: ", truths.shape)
+    # print("results: ", results.shape)
+    test_preds = results.reshape((-1, 4, 2)) #(938, 4, 2)
+    test_truth = truths.reshape((-1, 4)) #(938,4)
+    # print("test_preds: ", test_preds.shape)
+    # print("test_truth: ", test_truth.shape)
     emos_f1 = {}
     emos_acc = {}
     for emo_ind, em in enumerate(gc.best.iemocap_emos):
-        test_preds_i = np.argmax(test_preds[:, emo_ind], axis=1)
-        test_truth_i = test_truth[:, emo_ind]
+        test_preds_i = np.argmax(test_preds[:, emo_ind], axis=1) #(938,)
+        test_truth_i = test_truth[:, emo_ind] #(938,)
         f1 = f1_score(test_truth_i, test_preds_i, average='weighted')
         emos_f1[em] = f1
         acc = accuracy_score(test_truth_i, test_preds_i)
@@ -106,6 +132,11 @@ def logSummary():
             for em in gc.best.iemocap_emos:
                 print("highest %s %s F1: %f" % (split, em, gc.best.max_iemocap_f1[split][em]))
                 print("highest %s %s accuracy: %f" % (split, em, gc.best.max_iemocap_acc[split][em]))
+    elif gc.dataset == 'mosei_new':
+        for split in ['test', 'valid', 'test_at_valid_max']:
+            for em in gc.best.mosei_emos:
+                print("highest %s %s F1: %f" % (split, em, gc.best.max_mosei_f1[split][em]))
+                print("highest %s %s accuracy: %f" % (split, em, gc.best.max_mosei_acc[split][em]))
     elif gc.dataset == 'pom':
         for split in gc.best.split:
             for cls in gc.best.pom_cls:
@@ -242,7 +273,8 @@ def train_model(config_file_name, model_name):
     print(net)
     net.to(device)
 
-    if gc.dataset == "iemocap":
+#TODO: change this?
+    if gc.dataset == "iemocap" or gc.dataset == "mosei_new":
         criterion = nn.CrossEntropyLoss()
     else:
         criterion = nn.MSELoss()
@@ -287,15 +319,22 @@ def train_model(config_file_name, model_name):
                     device), inputLen.to(device), labels.to(device)
                 outputs = net(words, covarep, facet, inputLen)
                 outputs = outputs.long()
-                if gc.dataset == 'iemocap':
+                #TODO: do this for mosei as well?
+                if gc.dataset == 'iemocap' or gc.dataset == 'mosei_new':
+                    # print("outputs before:", outputs.shape)
                     outputs = outputs.view(-1, 2)
+                    # print("outputs after:", outputs.shape)
+                    # print("labels before:", labels.shape)
                     labels = labels.view(-1)
+                    # print("labels after:", labels.shape)
                 test_output_all.extend(outputs.tolist())
                 test_label_all.extend(labels.tolist())
             if gc.dataset == "iemocap":
                 test_f1, test_acc = eval_iemocap('test', test_output_all, test_label_all)
             elif gc.dataset == "pom":
                 test_mae, test_metrics = eval_pom('test', test_output_all, test_label_all)
+            elif gc.dataset == "mosei_new":
+                test_f1, test_acc = eval_mosei('test', test_output_all, test_label_all)
             else:
                 test_mae, test_cor, test_acc, test_acc_7, test_acc_5, test_f1_mfn, test_f1_raven, test_f1_muit, \
                 test_ex_zero_acc = eval_mosi('test', test_output_all, test_label_all)
@@ -309,7 +348,8 @@ def train_model(config_file_name, model_name):
                 words, covarep, facet, inputLen, labels = words.to(device), covarep.to(device), facet.to(
                     device), inputLen.to(device), labels.to(device)
                 outputs = net(words, covarep, facet, inputLen)
-                if gc.dataset == 'iemocap':
+                #TODO: is this necessary for mosei as well?
+                if gc.dataset == 'iemocap' or gc.dataset == 'mosei_new':
                     outputs = outputs.view(-1, 2)
                     labels = labels.view(-1)
                 output_all.extend(outputs.data.cpu().tolist())
@@ -328,6 +368,22 @@ def train_model(config_file_name, model_name):
                         gc.best.best_epoch = epoch + 1
                     if test_acc[em] > gc.best.max_iemocap_acc['test'][em]:
                         gc.best.max_iemocap_acc['test'][em] = test_acc[em]
+
+            elif gc.dataset == 'mosei_new':
+                valid_f1, valid_acc = eval_mosei('valid', output_all, label_all)
+                for em in gc.best.mosei_emos:
+                    if valid_f1[em] > gc.best.max_mosei_f1['valid'][em]:
+                        gc.best.max_mosei_f1['valid'][em] = valid_f1[em]
+                        gc.best.max_mosei_f1['test_at_valid_max'][em] = test_f1[em]
+                    if valid_acc[em] > gc.best.max_mosei_acc['valid'][em]:
+                        gc.best.max_mosei_acc['valid'][em] = valid_acc[em]
+                        gc.best.max_mosei_acc['test_at_valid_max'][em] = test_acc[em]
+                    if test_f1[em] > gc.best.max_mosei_f1['test'][em]:
+                        gc.best.max_mosei_f1['test'][em] = test_f1[em]
+                        gc.best.best_epoch = epoch + 1
+                    if test_acc[em] > gc.best.max_mosei_acc['test'][em]:
+                        gc.best.max_mosei_acc['test'][em] = test_acc[em]
+
             elif gc.dataset == "pom":
                 valid_mae, valid_metrics = eval_pom('valid', output_all, label_all)
                 for cls in gc.best.pom_cls:
@@ -417,12 +473,13 @@ def train_model(config_file_name, model_name):
             outputs = net(words, covarep, facet, inputLen)
             output_all.extend(outputs.tolist())
             label_all.extend(labels.tolist())
-            if gc.dataset != "iemocap" and gc.dataset != "pom":
+            #TODO: check this!!
+            if gc.dataset != "iemocap" and gc.dataset != "pom" and gc.dataset != "mosei_new":
                 err = torch.sum(torch.abs(outputs - labels))
                 tot_right += torch.sum(torch.eq(torch.sign(labels), torch.sign(outputs)))
                 tot_err += err
                 tot_num += covarep.size()[0]
-            if gc.dataset == 'iemocap':
+            if gc.dataset == 'iemocap' or gc.dataset == 'mosei_new':
                 outputs = outputs.view(-1, 2)
                 labels = labels.view(-1)
                 labels = labels.long()
@@ -466,6 +523,8 @@ def train_model(config_file_name, model_name):
             eval_iemocap('train', output_all, label_all)
         elif gc.dataset == 'pom':
             eval_pom('train', output_all, label_all)
+        elif gc.dataset == 'mosei_new':
+            eval_mosei('train', output_all, label_all)
         else:
             train_mae = tot_err / tot_num
             train_acc = float(tot_right) / tot_num

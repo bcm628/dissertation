@@ -15,8 +15,8 @@ class global_consts():
     model_path = "../model/"
 
 #TODO: change this to not none
-    log_path = 'C:/Users/bcmye/PycharmProjects/dissertation/Factorized-Multimodal-Transformer/logs'
-    #log_path = None
+    #log_path = 'C:/Users/bcmye/PycharmProjects/dissertation/FMT/logs'
+    log_path = None
 
     HPID = -1
 
@@ -30,8 +30,8 @@ class global_consts():
     # normDim = 100
     # hiddenDim = 300
     config = {
-      "cuda": 1,
-      "lr": 0.01,
+      "cuda": 0,
+      "lr": 0.001,
       "epoch_num": 100,
       "dropout": 0.2,
       "seed": 0,
@@ -41,18 +41,18 @@ class global_consts():
 
       "n_head": 2,
 
-      "proj_dim_a": 5,
+      "proj_dim_a": 40,
 
-      "proj_dim_v": 20,
+      "proj_dim_v": 80,
 
-      "n_layers": 2,
+      "n_layers": 4,
 
 
-      "ff_dim_final": 16,
+      "ff_dim_final": 512,
 
-      "dim_total_proj": 8,
+      "dim_total_proj": 800,
 
-      "conv_dims": [3]
+      "conv_dims": [8, 20, 10]
     }
 
 

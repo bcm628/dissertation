@@ -4,3 +4,4 @@ Data/IEMOCAP_egemaps
 Data/IEMOCAP_egemaps.csv
 Data/IEMOCAP_labels.csv
 FMT/iemocap_results.txt
+FMT/logs*

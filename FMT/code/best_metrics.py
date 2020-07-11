@@ -1,3 +1,4 @@
+#TODO: add mosei
 class Best():
     best_epoch = 0
 
@@ -60,6 +61,17 @@ class Best():
         for em in iemocap_emos:
             max_iemocap_f1[sp][em] = 0
             max_iemocap_acc[sp][em] = 0
+
+    mosei_emos = ["happy", "sad", "anger", "surprise", "disgust", "fear"]
+    split = ['valid', 'test_at_valid_max', 'test']
+    max_mosei_f1 = {}
+    max_mosei_acc = {}
+    for sp in split:
+        max_mosei_f1[sp] = {}
+        max_mosei_acc[sp] = {}
+        for em in mosei_emos:
+            max_mosei_f1[sp][em] = 0
+            max_mosei_acc[sp][em] = 0
 
     pom_cls = ["Confidence", "Passionate", "Voice pleasant", "Dominant", "Credible", "Vivid", "Expertise",
                "Entertaining", "Reserved", "Trusting", "Relaxed", "Outgoing", "Thorough",

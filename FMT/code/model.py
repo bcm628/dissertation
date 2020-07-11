@@ -19,6 +19,9 @@ class Net(nn.Module):
         self.gru = nn.GRU(input_size=dim_total, hidden_size=dim_total_proj)
         if gc.dataset == 'iemocap':
             final_out_dim = 2 * len(gc.best.iemocap_emos)
+        #TODO: check that this is right
+        elif gc.dataset == 'mosei_new':
+            final_out_dim = 2 * len (gc.best.mosei_emos)
         elif gc.dataset == 'pom':
             final_out_dim = len(gc.best.pom_cls)
         else:
