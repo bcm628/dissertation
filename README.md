@@ -11,9 +11,8 @@ Code
 Domain adaptation code based on pytorch_DANN by [CuthbertCai](https://github.com/CuthbertCai/pytorch_DANN "github: pytorch_DANN"). 
 Original code based on publication by [Ganin and Lempitsky](https://arxiv.org/abs/1505.07818 "arXiv: Domain adversarial training of neural networks"), 2015
 
-Factorized Multimodal Transformer (Zadeh et al, 2019) code from [A2Zadeh](https://github.com/A2Zadeh/Factorized-Multimodal-Transformer "github: Factorized-Multimodal-Transformer")
+Factorized Multimodal Transformer ([Zadeh et al, 2019](https://arxiv.org/abs/1911.09826?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+arxiv%2FQSXk+%28ExcitingAds%21+cs+updates+on+arXiv.org%29 "arXiv: Factorized Multimodal Transformer for Multimodal Sequential Learning")) code from [A2Zadeh](https://github.com/A2Zadeh/Factorized-Multimodal-Transformer "github: Factorized-Multimodal-Transformer")
 
-Original publication can be found [here](https://arxiv.org/abs/1911.09826?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+arxiv%2FQSXk+%28ExcitingAds%21+cs+updates+on+arXiv.org%29 "arXiv: Factorized Multimodal Transformer for Multimodal Sequential Learning")
 
 Data
 ----
