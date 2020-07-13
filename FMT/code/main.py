@@ -65,11 +65,10 @@ def eval_mosi(split, output_all, label_all):
     return mae, corr, acc, acc_7, acc_5, f1_mfn, f1_raven, f1_muit, ex_zero_acc
 
 #TODO: check this
-#based on Interpretable-Multimodal-Routing-for-Human-Multimodal-Language
+#Added evaluation for CMU-MOSEI emotion data
 def eval_mosei(split, output_all, label_all):
     truths = np.array(label_all) #(27972)
     results = np.array(output_all) # (27972,2)
-    #TODO: reshape results and truths? -
     test_preds = results.reshape((-1, 6, 2)) #(4662,6,2)
     test_truth = truths.reshape((-1, 6)) # (4662,6)
     f1_total = {}
@@ -77,7 +76,6 @@ def eval_mosei(split, output_all, label_all):
     for emo_ind, em in enumerate(gc.best.mosei_emos):
         #TODO: np.argmax?
         test_preds_i = np.argmax(test_preds[:, emo_ind], axis=1) #(4662)
-        #TODO: make binary accuracy - truth labels should be 1 or 0
         test_truth_i = test_truth[:,emo_ind]
         f1 = f1_score(test_truth_i, test_preds_i, average='weighted')
         acc = accuracy_score(test_truth_i, test_preds_i)
@@ -90,12 +88,8 @@ def eval_mosei(split, output_all, label_all):
 def eval_iemocap(split, output_all, label_all):
     truths = np.array(label_all) # (3752,)
     results = np.array(output_all) #(3752, 2)
-    # print("truths: ", truths.shape)
-    # print("results: ", results.shape)
     test_preds = results.reshape((-1, 4, 2)) #(938, 4, 2)
     test_truth = truths.reshape((-1, 4)) #(938,4)
-    # print("test_preds: ", test_preds.shape)
-    # print("test_truth: ", test_truth.shape)
     emos_f1 = {}
     emos_acc = {}
     for emo_ind, em in enumerate(gc.best.iemocap_emos):

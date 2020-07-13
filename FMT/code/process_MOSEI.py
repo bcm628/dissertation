@@ -1,18 +1,19 @@
-#code to process tensors.pkl from CMU Immortal server
+"""
+Process tensors.pkl (CMU-MOSEI) from CMU Immortal server into a useable dictionary. Labels are made binary to compare performance
+with IEMOCAP data. Only uses emotion labels from CMU-MOSEI and not sentiment labels.
+This is imported as a module into MOSEI_new_dataset.py
+"""
 
-#format of tensors.pkl:
-#[[{feat:array, feat:array, ...}, {feat:array, feat: array, ...}, {feat:array, feat:array, ...}],["train","valid", "test"]]
-#e.g. tensors[0][0]['glove_vectors'] = training glove_vectors
 
-#expected format: {'test': {'labels_sent': ..., 'language': ...,, etc}, 'train': {'labels':..., 'language':..., etc}, 'valid': {etc}}
-#I think...
-
-#Iemocap features are Covarep, glove and Facet
 import pickle
 import numpy as np
 
-#TODO: make labels binary
+
 def format_mosei(data_path):
+    """
+    :arg data_path: path to tensors.pkl from  CMU immortal server
+    :returns: nested dictionary with dataset folds as keys and a dictionary of labels and features as values;
+    features are COVAREP acoustic features, glove word embeddings and Facet visual embeddings"""
     mosei = pickle.load(open(data_path, 'rb'), encoding='latin1')
 
     train_dict = {}
