@@ -43,7 +43,7 @@ class MoseiNewDataset(Data.Dataset):
         
         #dataset = format_mosei('C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned/tensors.pkl')
         #for running on Google Colab
-        dataset = pickle.load(open('/content/drive/My Drive/Colab Notebooks/mosei_dict.pickle', 'rb), encoding='latin1')
+        dataset = pickle.load(open('/content/drive/My Drive/Colab Notebooks/mosei_dict.pickle', 'rb'), encoding='latin1')
         gc.padding_len = dataset['test']['language'].shape[1]
         gc.dim_l = dataset['test']['language'].shape[2]
         gc.dim_a = dataset['test']['acoustic'].shape[2]
