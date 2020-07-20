@@ -4,7 +4,7 @@ from best_metrics import Best
 class global_consts():
     single_gpu = True
     load_model = False
-    SDK_PATH = "C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK"
+    SDK_PATH = '/content/drive/My\ Drive/Colab\ Notebooks/CMU-MultimodalSDK'
 
     save_grad = False
 
@@ -15,7 +15,9 @@ class global_consts():
     model_path = "../model/"
 
 #TODO: change this to not none
-    log_path = 'C:/Users/bcmye/PycharmProjects/dissertation/FMT/logs'
+    #for Google Colab
+    log_path = '/content/drive/My\ Drive/Colab\ Notebooks/dissertation'
+    #log_path = 'C:/Users/bcmye/PycharmProjects/dissertation/FMT/logs'
     #log_path = None
 
     HPID = -1
