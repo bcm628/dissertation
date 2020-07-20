@@ -5,11 +5,12 @@ This is imported as a module into MOSEI_new_dataset.py
 """
 
 
-import pickle
+
 import numpy as np
+import pickle
 
 
-def format_mosei(data_path):
+def format_mosei(data_path, pickle_out=False):
     """
     :arg data_path: path to tensors.pkl from  CMU immortal server
     :returns: nested dictionary with dataset folds as keys and a dictionary of labels and features as values;
@@ -59,5 +60,9 @@ def format_mosei(data_path):
     mosei_new['train'] = train_dict
     mosei_new['valid'] = valid_dict
     mosei_new['test'] = test_dict
+
+    if pickle_out == True:
+        with open('mosei_dict.pickle', 'wb') as f:
+            pickle.dump(mosei_new, f, protocol=pickle.HIGHEST_PROTOCOL)
 
     return mosei_new

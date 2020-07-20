@@ -315,12 +315,12 @@ def train_model(config_file_name, model_name):
                 outputs = outputs.long()
                 #TODO: do this for mosei as well?
                 if gc.dataset == 'iemocap' or gc.dataset == 'mosei_new':
-                    # print("outputs before:", outputs.shape)
+                    #print("outputs before:", outputs.shape)
                     outputs = outputs.view(-1, 2)
-                    # print("outputs after:", outputs.shape)
-                    # print("labels before:", labels.shape)
+                    #print("outputs after:", outputs.shape)
+                    #print("labels before:", labels.shape)
                     labels = labels.view(-1)
-                    # print("labels after:", labels.shape)
+                    #print("labels after:", labels.shape)
                 test_output_all.extend(outputs.tolist())
                 test_label_all.extend(labels.tolist())
             if gc.dataset == "iemocap":
@@ -474,8 +474,12 @@ def train_model(config_file_name, model_name):
                 tot_err += err
                 tot_num += covarep.size()[0]
             if gc.dataset == 'iemocap' or gc.dataset == 'mosei_new':
+                #print("outputs before:", outputs.shape)
                 outputs = outputs.view(-1, 2)
+                #print("outputs after:", outputs.shape)
+                #print("labels before:", labels.shape)
                 labels = labels.view(-1)
+                #print("labels after:", labels.shape)
                 labels = labels.long()
             loss = criterion(outputs, labels)
             loss.backward()

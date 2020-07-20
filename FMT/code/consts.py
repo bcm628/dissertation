@@ -15,12 +15,12 @@ class global_consts():
     model_path = "../model/"
 
 #TODO: change this to not none
-    #log_path = 'C:/Users/bcmye/PycharmProjects/dissertation/FMT/logs'
-    log_path = None
+    log_path = 'C:/Users/bcmye/PycharmProjects/dissertation/FMT/logs'
+    #log_path = None
 
     HPID = -1
 
-    batch_size = 20
+    batch_size = 10
 
     padding_len = -1
 

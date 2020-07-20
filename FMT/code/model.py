@@ -3,7 +3,8 @@ import torch.nn as nn
 from consts import global_consts as gc
 from transformer import Models
 
-
+#TODO: I think I can just remove these linear layers and put in my DANN output
+#TODO: is that all that the initial embedding layer is?
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -21,7 +22,7 @@ class Net(nn.Module):
             final_out_dim = 2 * len(gc.best.iemocap_emos)
         #TODO: check that this is right
         elif gc.dataset == 'mosei_new':
-            final_out_dim = 2 * len (gc.best.mosei_emos)
+            final_out_dim = 2 * len(gc.best.mosei_emos)
         elif gc.dataset == 'pom':
             final_out_dim = len(gc.best.pom_cls)
         else:
