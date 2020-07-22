@@ -63,6 +63,6 @@ def format_mosei(data_path, pickle_out=False):
 
     if pickle_out == True:
         with open('mosei_dict.pickle', 'wb') as f:
-            pickle.dump(mosei_new, f, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(mosei_new, f)
 
     return mosei_new

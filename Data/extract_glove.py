@@ -6,7 +6,7 @@ import numpy as np
 # https://stackoverflow.com/questions/37793118/load-pretrained-glove-vectors-in-python
 
 def loadGloVeModel(file):
-    with open(file, "r") as f:
+    with open(file, "r", encoding='utf-8') as f:
         glovemodel = {}
         for line in f:
             line = line.split()
@@ -16,8 +16,8 @@ def loadGloVeModel(file):
     print(len(glovemodel), "words loaded")
     return glovemodel
 
-#GloVemodel = loadGloVeModel(GloVefile)
-#GloVemodel["hello"]
+GloVemodel = loadGloVeModel("C:/Users/bcmye/PycharmProjects/Anvil/glove.840B.300d.txt")
+GloVemodel["hello"]
 
 if __name__ == "__main__":
     GloVefile = "Downloads/glove.840B.300d/glove.840B.300d"
