@@ -10,7 +10,7 @@ import numpy as np
 import pickle
 
 
-def format_mosei(data_path, pickle_out=False):
+def format_mosei(data_path, pickle_out=False, three_dim=False):
     """
     :arg data_path: path to tensors.pkl from  CMU immortal server
     :returns: nested dictionary with dataset folds as keys and a dictionary of labels and features as values;
@@ -61,7 +61,11 @@ def format_mosei(data_path, pickle_out=False):
     mosei_new['valid'] = valid_dict
     mosei_new['test'] = test_dict
 
-    if pickle_out == True:
+    if three_dim:
+        for split in mosei_new:
+            mosei_new[split]['labels'] = mosei_new[split]['labels'][:, :, 3:]
+
+    if pickle_out:
         with open('mosei_dict.pickle', 'wb') as f:
             pickle.dump(mosei_new, f)
 

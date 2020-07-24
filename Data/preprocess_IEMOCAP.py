@@ -1,19 +1,22 @@
-#DOESN'T WORK YET
-#TODO: extract labels?, extract egemaps and process, extrtact visual features, extract glove word embeddings
-#if main, store features in csv
-#otherwise, store in pd dataframe to import to NN
+"""Processes iemocap_data.pkl from CMU and removes neutral dimension in order to use with CMU-MOSEI"""
 
-import argparse
+import pickle
 import os
-import pandas as pd
-import re
 
-parser = argparse.ArgumentParser
-parser.add_argument()
+
+
+
+def proccess_iemocap(data_path):
+    dataset = pickle.load(open(os.path.join(data_path, "iemocap_data.pkl"), 'rb'))
+    for split in dataset:
+        dataset[split]['labels'] = dataset[split]['labels'][:,1:,:]
+
+    return dataset
+
+
+
+
 
 if __name__ == "__main__":
-    #extract_labels
-    #extract_egemaps
-    #extract_visual
-    #extract_glove
-    pass
+    data_path = './IEMOCAP_aligned'
+    proccess_iemocap(data_path)

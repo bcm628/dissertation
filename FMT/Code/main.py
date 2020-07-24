@@ -458,6 +458,7 @@ def train_model(config_file_name, model_name):
             batch_update_dict = {}
             max_i = i
             words, covarep, facet, inputLen, labels = data
+            #print("labels:", labels.shape)
             if covarep.size()[0] == 1:
                 continue
             words, covarep, facet, inputLen, labels = words.to(device), covarep.to(device), facet.to(
@@ -481,6 +482,7 @@ def train_model(config_file_name, model_name):
                 labels = labels.view(-1)
                 #print("labels after:", labels.shape)
                 labels = labels.long()
+
             loss = criterion(outputs, labels)
             loss.backward()
             # torch.nn.utils.clip_grad_norm_(net.parameters(), max_norm=gc.config['max_grad'], norm_type=inf)

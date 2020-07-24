@@ -4,14 +4,15 @@ from best_metrics import Best
 class global_consts():
     single_gpu = True
     load_model = False
+    #SDK_PATH = "C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK"
     SDK_PATH = '/content/drive/My Drive/Colab Notebooks/CMU-MultimodalSDK'
 
     save_grad = False
 
     #dataset = "iemocap"
     dataset = 'mosei_new'
-    #data_path = "C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned"
-    data_path = "C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned"
+    data_path = "C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned"
+    #data_path = "C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned"
     model_path = "../model/"
 
 #TODO: change this to not none
@@ -35,7 +36,7 @@ class global_consts():
       "cuda": 0,
       "lr": 0.001,
       "epoch_num": 100,
-      "dropout": 0,
+      "dropout": 0.2,
       "seed": 0,
       "gru_lr": 0.001,
       "gru_dropout": 0.2,
@@ -47,7 +48,7 @@ class global_consts():
 
       "proj_dim_v": 80,
 
-      "n_layers": 8,
+      "n_layers": 4,
 
 
       "ff_dim_final": 512,
