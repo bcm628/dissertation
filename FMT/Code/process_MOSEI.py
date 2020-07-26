@@ -32,6 +32,7 @@ def format_mosei(data_path, pickle_out=False, three_dim=False):
     train_dict['acoustic'] = mosei[0][0]['COAVAREP']
     train_dict['visual'] = mosei[0][0]['FACET 4.2']
     train_dict['labels'] = all_train[:,:,1:] #removes sentiment labels
+    train_dict['labels'] = np.transpose(train_dict['labels'], (0,2,1))
 
     all_valid = mosei[0][1]['All Labels']
     with np.nditer(all_valid, op_flags=['readwrite']) as val:
@@ -43,6 +44,7 @@ def format_mosei(data_path, pickle_out=False, three_dim=False):
     valid_dict['acoustic'] = mosei[0][1]['COAVAREP']
     valid_dict['visual'] = mosei[0][1]['FACET 4.2']
     valid_dict['labels'] = all_valid[:,:,1:]
+    valid_dict['labels'] = np.transpose(valid_dict['labels'], (0,2,1))
 
     all_test = mosei[0][2]['All Labels']
     with np.nditer(all_test, op_flags=['readwrite']) as t:
@@ -54,6 +56,7 @@ def format_mosei(data_path, pickle_out=False, three_dim=False):
     test_dict['acoustic'] = mosei[0][2]['COAVAREP']
     test_dict['visual'] = mosei[0][2]['FACET 4.2']
     test_dict['labels'] = all_test[:,:,1:]
+    test_dict['labels'] = np.transpose(test_dict['labels'], (0,2,1))
 
     mosei_new = {}
 
@@ -61,9 +64,10 @@ def format_mosei(data_path, pickle_out=False, three_dim=False):
     mosei_new['valid'] = valid_dict
     mosei_new['test'] = test_dict
 
+#TODO: remove samples with no labels
     if three_dim:
         for split in mosei_new:
-            mosei_new[split]['labels'] = mosei_new[split]['labels'][:, :, 3:]
+            mosei_new[split]['labels'] = mosei_new[split]['labels'][:, 3:, :]
 
     if pickle_out:
         with open('mosei_dict.pickle', 'wb') as f:
