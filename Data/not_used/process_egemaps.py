@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 #change as needed
-data_path = "./IEMOCAP_egemaps"
+data_path = "../IEMOCAP_egemaps"
 txt_file = "Ses01F_impro01_F000.wav_egemaps.txt"
 
 data_dict = {}

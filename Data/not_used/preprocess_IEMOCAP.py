@@ -18,5 +18,5 @@ def proccess_iemocap(data_path):
 
 
 if __name__ == "__main__":
-    data_path = './IEMOCAP_aligned'
+    data_path = '../IEMOCAP_aligned'
     proccess_iemocap(data_path)
