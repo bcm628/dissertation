@@ -11,9 +11,12 @@ class global_consts():
 
     #dataset = "iemocap"
     dataset = 'mosei_new'
-    data_path = "C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned"
-    #data_path = "C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned"
+    #data_path = "C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned"
+    data_path = "C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned"
     model_path = "../model/"
+    #cross = 'mosei_new' #indicates which is the testing dataset
+    #cross = 'iemocap'
+    cross = 'none'
 
 #TODO: change this to not none
     #for Google Colab
@@ -42,13 +45,13 @@ class global_consts():
       "gru_dropout": 0.2,
       "max_grad": 0.1,
 
-      "n_head": 2,
+      "n_head": 4,
 
       "proj_dim_a": 40,
 
       "proj_dim_v": 80,
 
-      "n_layers": 4,
+      "n_layers": 6,
 
 
       "ff_dim_final": 512,

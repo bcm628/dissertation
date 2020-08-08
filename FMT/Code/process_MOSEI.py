@@ -69,8 +69,30 @@ def format_mosei(data_path, pickle_out=False, three_dim=False):
         for split in mosei_new:
             mosei_new[split]['labels'] = mosei_new[split]['labels'][:, 3:, :]
 
+        final_mosei = {}
+        splits = ['train', 'valid', 'test']
+        feats = ['labels', 'language', 'acoustic', 'visual']
+
+        for split in splits:
+            final_mosei[split] = {}
+            for feat in feats:
+                final_mosei[split][feat] = []
+
+        for split in mosei_new:
+            for i, x in enumerate(mosei_new[split]['labels']):
+                if np.sum(x) != 0:
+                    for key in final_mosei[split]:
+                        final_mosei[split][key].append(mosei_new[split][key][i])
+            for key in final_mosei[split]:
+                final_mosei[split][key] = np.array(final_mosei[split][key])
+        mosei_new = final_mosei
+
     if pickle_out:
-        with open('mosei_dict.pickle', 'wb') as f:
+        with open('mosei_dict2.pickle', 'wb') as f:
             pickle.dump(mosei_new, f)
 
     return mosei_new
+
+
+if __name__ == "__main__":
+    format_mosei('C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned/tensors.pkl', pickle_out=True, three_dim=True)

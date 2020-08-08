@@ -51,7 +51,7 @@ class Best():
     test_mae_at_valid_min = 10
     test_cor_at_valid_max = 0
 
-    iemocap_emos = ["Neutral", "Happy", "Sad", "Angry"]
+    iemocap_emos = [ "Happy", "Sad", "Angry"]
     split = ['valid', 'test_at_valid_max', 'test']
     max_iemocap_f1 = {}
     max_iemocap_acc = {}
@@ -62,7 +62,7 @@ class Best():
             max_iemocap_f1[sp][em] = 0
             max_iemocap_acc[sp][em] = 0
 
-    mosei_emos = ["happy", "sad", "anger", "surprise", "disgust", "fear"]
+    mosei_emos = ["Happy", "Sad", "Angry"]
     split = ['valid', 'test_at_valid_max', 'test']
     max_mosei_f1 = {}
     max_mosei_acc = {}

@@ -69,8 +69,8 @@ def eval_mosi(split, output_all, label_all):
 def eval_mosei(split, output_all, label_all):
     truths = np.array(label_all) #(27972)
     results = np.array(output_all) # (27972,2)
-    test_preds = results.reshape((-1, 6, 2)) #(4662,6,2)
-    test_truth = truths.reshape((-1, 6)) # (4662,6)
+    test_preds = results.reshape((-1, 3, 2)) #(4662,6,2)
+    test_truth = truths.reshape((-1, 3)) # (4662,6)
     f1_total = {}
     acc_total = {}
     for emo_ind, em in enumerate(gc.best.mosei_emos):
@@ -88,8 +88,8 @@ def eval_mosei(split, output_all, label_all):
 def eval_iemocap(split, output_all, label_all):
     truths = np.array(label_all) # (3752,)
     results = np.array(output_all) #(3752, 2)
-    test_preds = results.reshape((-1, 4, 2)) #(938, 4, 2)
-    test_truth = truths.reshape((-1, 4)) #(938,4)
+    test_preds = results.reshape((-1, 3, 2)) #(938, 4, 2)
+    test_truth = truths.reshape((-1, 3)) #(938,4)
     emos_f1 = {}
     emos_acc = {}
     for emo_ind, em in enumerate(gc.best.iemocap_emos):
@@ -206,7 +206,7 @@ def train_model(config_file_name, model_name):
         dir_path = "%s%d" % (gc.log_path, gc.HPID)
         if not os.path.exists(dir_path):
             os.mkdir(dir_path)
-        log_file = "%s/print.log" % dir_path
+        log_file = "%s/mosei_03.log" % dir_path
         f = open(log_file, "w+")
         sys.stdout = f
     if gc.dataset == "mosi_short":
@@ -215,6 +215,8 @@ def train_model(config_file_name, model_name):
     elif gc.dataset == 'mosei_new':
         from MOSEI_new_dataset import MoseiNewDataset
         ds = MoseiNewDataset
+        from Multimodal_dataset import MultimodalDataset
+        print("Training on MOSEI")
     elif gc.dataset == 'mosi1' or gc.dataset == 'mosi2':
         from MOSI_new_dataset import MosiNewDataset
         ds = MosiNewDataset
@@ -224,6 +226,8 @@ def train_model(config_file_name, model_name):
     else:
         from Multimodal_dataset import MultimodalDataset
         ds = MultimodalDataset
+        from MOSEI_new_dataset import MoseiNewDataset
+        print("Training on IEMOCAP")
 
     train_dataset = ds(gc.data_path, cls="train")
     train_loader = Data.DataLoader(
@@ -233,13 +237,37 @@ def train_model(config_file_name, model_name):
         num_workers=1,
     )
 
-    test_dataset = ds(gc.data_path, cls="test")
-    test_loader = Data.DataLoader(
-        dataset=test_dataset,
-        batch_size=gc.batch_size,
-        shuffle=False,
-        num_workers=1,
-    )
+    if gc.cross == 'mosei_new':
+    ###for training on iemocap and testing on mosei###
+
+        test_dataset = MoseiNewDataset("C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned", cls='test')
+        test_loader = Data.DataLoader(
+            dataset=test_dataset,
+            batch_size=gc.batch_size,
+            shuffle=False,
+            num_workers=1,
+        )
+        print("Testing on MOSEI")
+
+    elif gc.cross == 'iemocap':
+    ###for training on mosei and testing on iemocap##
+        test_dataset = MultimodalDataset(cls='test')
+        test_loader = Data.DataLoader(
+            dataset=test_dataset,
+            batch_size=gc.batch_size,
+            shuffle=False,
+            num_workers=1,
+        )
+        print("Testing on IEMOCAP")
+
+    elif gc.cross == 'none':
+        test_dataset = ds(gc.data_path, cls="test")
+        test_loader = Data.DataLoader(
+            dataset=test_dataset,
+            batch_size=gc.batch_size,
+            shuffle=False,
+            num_workers=1,
+        )
 
     valid_dataset = ds(gc.data_path, cls="valid")
     valid_loader = Data.DataLoader(
@@ -250,6 +278,9 @@ def train_model(config_file_name, model_name):
     )
 
     print("HPID:%d:Data Successfully Loaded." % gc.HPID)
+    print("Train samples:", len(train_loader.dataset))
+    print("Test samples:", len(test_loader.dataset))
+    print("Valid samples:", len(valid_loader.dataset))
 
     if gc.single_gpu:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -323,15 +354,20 @@ def train_model(config_file_name, model_name):
                     #print("labels after:", labels.shape)
                 test_output_all.extend(outputs.tolist())
                 test_label_all.extend(labels.tolist())
-            if gc.dataset == "iemocap":
-                test_f1, test_acc = eval_iemocap('test', test_output_all, test_label_all)
-            elif gc.dataset == "pom":
-                test_mae, test_metrics = eval_pom('test', test_output_all, test_label_all)
-            elif gc.dataset == "mosei_new":
+            if gc.cross == 'mosei_new':
                 test_f1, test_acc = eval_mosei('test', test_output_all, test_label_all)
+            elif gc.cross == 'iemocap':
+                test_f1, test_acc = eval_iemocap('test', test_output_all, test_label_all)
             else:
-                test_mae, test_cor, test_acc, test_acc_7, test_acc_5, test_f1_mfn, test_f1_raven, test_f1_muit, \
-                test_ex_zero_acc = eval_mosi('test', test_output_all, test_label_all)
+                if gc.dataset == "iemocap":
+                    test_f1, test_acc = eval_iemocap('test', test_output_all, test_label_all)
+                elif gc.dataset == "pom":
+                    test_mae, test_metrics = eval_pom('test', test_output_all, test_label_all)
+                elif gc.dataset == "mosei_new":
+                    test_f1, test_acc = eval_mosei('test', test_output_all, test_label_all)
+                else:
+                    test_mae, test_cor, test_acc, test_acc_7, test_acc_5, test_f1_mfn, test_f1_raven, test_f1_muit, \
+                    test_ex_zero_acc = eval_mosi('test', test_output_all, test_label_all)
 
             label_all = []
             output_all = []
