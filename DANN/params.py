@@ -8,13 +8,17 @@ theta = 1
 
 modality = 'acoustic'
 mod_dim = 74
-padding_len = 50
+seq_len = 50
 save_name = None
 
 #LSTM param
 lstm_dim = 64
 lstm_layers = 2
 bidirectional = True
+
+#RNN params
+rnn_dim = 64
+rnn_layers = 2
 
 
 emo_labels = ['happy', 'sad', 'angry']
