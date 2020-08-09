@@ -81,7 +81,7 @@ class MultimodalDataset(Data.Dataset):
 
             if modality == 'acoustic':
                 ds.feat = torch.tensor(dataset[split_type]['audio'].astype(np.float32))
-                #ds.feat = F.pad(ds.feat, (0,0,0,30))
+                ds.feat = F.pad(ds.feat, (0,0,0,30))
                 #print(ds.feat.shape)
                 ds.feat[ds.feat == -np.inf] = 0
                 ds.feat = ds.feat.clone().cpu().detach()
