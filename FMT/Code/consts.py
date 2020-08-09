@@ -45,13 +45,13 @@ class global_consts():
       "gru_dropout": 0.2,
       "max_grad": 0.1,
 
-      "n_head": 4,
+      "n_head": 2,
 
       "proj_dim_a": 40,
 
       "proj_dim_v": 80,
 
-      "n_layers": 6,
+      "n_layers": 4,
 
 
       "ff_dim_final": 512,
