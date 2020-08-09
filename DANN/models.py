@@ -23,6 +23,30 @@ class GradReverse(torch.autograd.Function):
     def grad_reverse(x, constant):
         return GradReverse.apply(x, constant)
 
+#TODO: try using hidden states
+#TODO: add linear layer?
+class FeatureExtractor_RNN(nn.Module):
+    def __init__(self, batch_size, hidden_dim, num_layers):
+        super(FeatureExtractor, self).__init__()
+        self.batch_size = batch_size
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+
+        self.rnn = nn.RNN(params.mod_dim,
+                          hidden_dim,
+                          num_layers=num_layers,
+                          batch_first=True,
+                          nonlinearity='relu')
+        self.hidden = torch.zeros(num_layers, batch_size, hidden_dim).cuda()
+        self.fc = nn.Linear(hidden_dim, params.mod_dim)
+        #self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        rnn_out, _ = self.rnn(x, self.hidden)
+        out = self.fc(rnn_out)
+        print(out)
+        #out = self.sigmoid(preds)
+        return out
 
 class FeatureExtractor(nn.Module):
     """Feedforward DNN feature extractor"""
@@ -33,16 +57,18 @@ class FeatureExtractor(nn.Module):
 
         self.fc1 = nn.Linear(params.mod_dim, 128)
         self.fc2 = nn.Linear(128, 256)
+        #self.fc4 = nn.Linear(54, 64)
         self.fc3 = nn.Linear(256, params.mod_dim)
         self.dropout = nn.Dropout()
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
-        x = self.dropout(x)
+        #x = self.dropout(x)
         x = F.relu(self.fc2(x))
+        #x = F.relu(self.fc4(x))
         x = self.fc3(x)
 
-        return F.relu(x)
+        return x
 
 
 class TaskClassifier(nn.Module):
@@ -59,27 +85,58 @@ class TaskClassifier(nn.Module):
                             num_layers=num_layers,
                             bidirectional=bidirectional,
                             batch_first=True)
-        self.fc = nn.Linear(hidden_dim*num_layers, 3)
+        if bidirectional:
+            self.fc = nn.Linear(hidden_dim*2, 3)
+        else:
+            self.fc = nn.Linear(hidden_dim, 3)
+
         self.sigmoid = nn.Sigmoid()
 
-        if bidirectional:
-            self.hidden = (torch.zeros(num_layers*2, batch_size, hidden_dim).cuda(),
-                           torch.zeros(num_layers*2, batch_size, hidden_dim).cuda())
-        else:
-            self.hidden = (torch.zeros(num_layers, batch_size, hidden_dim).cuda(),
-                           torch.zeros(num_layers, batch_size, hidden_dim).cuda())
+        # if bidirectional:
+        #     self.hidden = (torch.zeros(num_layers*2, batch_size, hidden_dim).cuda(),
+        #                    torch.zeros(num_layers*2, batch_size, hidden_dim).cuda())
+        # else:
+        #     self.hidden = (torch.zeros(num_layers, batch_size, hidden_dim).cuda(),
+        #                    torch.zeros(num_layers, batch_size, hidden_dim).cuda())
 
     def forward(self, x):
-        lstm_out, _ = self.lstm(x, self.hidden)
+        lstm_out, _ = self.lstm(x)
         out = self.fc(lstm_out[:, -1, :])
         out = self.sigmoid(out)
         return out
+
+
+class DomainClassifier_RNN(nn.Module):
+    def __init__(self, batch_size, hidden_dim, num_layers):
+        super(DomainClassifier, self).__init__()
+        self.batch_size = batch_size
+        self.hidden_dim = hidden_dim
+        self.num_layers = num_layers
+
+        self.rnn = nn.RNN(params.mod_dim,
+                          hidden_dim,
+                          num_layers=num_layers,
+                          batch_first=True,
+                          nonlinearity='relu',
+                          dropout=0.2)
+        self.hidden = torch.zeros(num_layers, batch_size, hidden_dim).cuda()
+        self.fc = nn.Linear(hidden_dim, 2)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x, constant):
+        x = GradReverse.grad_reverse(x, constant)
+        rnn_out, _ = self.rnn(x, self.hidden)
+        preds = self.fc(rnn_out[:, -1, :])
+        out = self.sigmoid(preds)
+        return out
+
+
 
 class DomainClassifier(nn.Module):
     """Classifies the domain of input samples. Trained to increase loss"""
     def __init__(self):
         super(DomainClassifier, self).__init__()
-        self.fc1 = nn.Linear(params.mod_dim, 128)
+        self.fc1 = nn.Linear(params.mod_dim * params.seq_len, 128)
         self.fc2 = nn.Linear(128, 256)
         self.fc3 = nn.Linear(256, 2)
         self.dropout = nn.Dropout()
@@ -87,7 +144,8 @@ class DomainClassifier(nn.Module):
 
     def forward(self, x, constant):
         x = GradReverse.grad_reverse(x, constant)
-        x = F.relu(self.fc1(x))
+        x = x.view(params.batch_size, -1)
+        x = F.relu(self.dropout(self.fc1(x)))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
 
