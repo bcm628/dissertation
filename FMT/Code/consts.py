@@ -39,7 +39,7 @@ class global_consts():
       "cuda": 0,
       "lr": 0.001,
       "epoch_num": 100,
-      "dropout": 0,
+      "dropout": 0.2,
       "seed": 0,
       "gru_lr": 0.001,
       "gru_dropout": 0.2,
