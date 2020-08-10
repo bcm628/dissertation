@@ -8,9 +8,9 @@ import numpy as np
 
 from DANN.util import dataloaders
 
-train_loader = dataloaders.get_train_loader('iemocap')
-test_loader = dataloaders.get_test_loader('iemocap')
-valid_loader = dataloaders.get_valid_loader('iemocap')
+train_loader = dataloaders.get_train_loader('mosei')
+test_loader = dataloaders.get_test_loader('mosei')
+valid_loader = dataloaders.get_valid_loader('mosei')
 
 criterion = nn.BCELoss()
 
@@ -38,7 +38,7 @@ class Task_Classifier(nn.Module):
         out = self.sigmoid(preds)
         return out
 
-#task_classifier = Task_Classifier()
+task_classifier = Task_Classifier()
 task_classifier = task_classifier.cuda()
 
 optimizer = optim.Adam(task_classifier.parameters(), lr=0.001)

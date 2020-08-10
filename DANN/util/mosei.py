@@ -35,8 +35,9 @@ class MoseiNewDataset(Data.Dataset):
     def load_data(self, modality):
         #dataset = format_mosei(os.path.join(params.mosei_path, 'tensors.pkl'), three_dim=True)
 
-        dataset = pickle.load(open("C:/Users/bcmye/PycharmProjects/dissertation/FMT/Code/mosei_dict2.pickle", "rb"),
-                              encoding='latin1')
+        # dataset = pickle.load(open("C:/Users/bcmye/PycharmProjects/dissertation/FMT/Code/mosei_dict2.pickle", "rb"),
+        #                       encoding='latin1')
+        dataset = pickle.load(open('/content/drive/My Drive/Colab Notebooks/mosei_dict2.pickle', 'rb'), encoding='latin1')
 
         if modality == 'acoustic':
             #params.padding_len = dataset['test']['language'].shape[1]
