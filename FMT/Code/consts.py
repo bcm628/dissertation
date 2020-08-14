@@ -9,8 +9,8 @@ class global_consts():
 
     save_grad = False
 
-    dataset = "iemocap"
-    #dataset = 'mosei_new'
+    #dataset = "iemocap"
+    dataset = 'mosei_new'
     #data_path = "C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned"
     data_path = '/content/drive/My Drive/Colab Notebooks'
     #data_path = "C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned"
@@ -40,13 +40,13 @@ class global_consts():
       "cuda": 0,
       "lr": 0.001,
       "epoch_num": 100,
-      "dropout": 0,
+      "dropout": 0.2,
       "seed": 0,
       "gru_lr": 0.001,
       "gru_dropout": 0.2,
       "max_grad": 0.1,
 
-      "n_head": 2,
+      "n_head": 4,
 
       "proj_dim_a": 40,
 
