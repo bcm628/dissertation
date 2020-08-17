@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torch.utils.data as Data
 
-import torch.functional as F
+import torch.nn.functional as F
 
 from consts import global_consts as gc
 
