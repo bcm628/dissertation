@@ -5,6 +5,8 @@ import numpy as np
 import torch
 import torch.utils.data as Data
 
+import torch.functional as F
+
 from consts import global_consts as gc
 
 
@@ -80,10 +82,13 @@ class MultimodalDataset(Data.Dataset):
         for ds, split_type in [(MultimodalDataset.trainset, 'train'), (MultimodalDataset.validset, 'valid'),
                                (MultimodalDataset.testset, 'test')]:
             ds.text = torch.tensor(dataset[split_type]['text'].astype(np.float32)).cpu().detach()
+            ds.text = F.pad(ds.text, (0,0,0,30))
             ds.audio = torch.tensor(dataset[split_type]['audio'].astype(np.float32))
             ds.audio[ds.audio == -np.inf] = 0
             ds.audio = ds.audio.clone().cpu().detach()
+            ds.audio = F.pad(ds.audio, (0,0,0,30))
             ds.vision = torch.tensor(dataset[split_type]['vision'].astype(np.float32)).cpu().detach()
+            ds.vision = F.pad(ds.vision, (0,0,0,30))
             if gc.dataset == 'iemocap':
                 ds.y = torch.tensor(dataset[split_type]['labels'].astype(np.long)).cpu().detach()
             else:
