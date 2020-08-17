@@ -206,7 +206,7 @@ def train_model(config_file_name, model_name):
         dir_path = "%s%d" % (gc.log_path, gc.HPID)
         if not os.path.exists(dir_path):
             os.mkdir(dir_path)
-        log_file = "%s/mosei_03.log" % dir_path
+        log_file = "%s/iemocap_to_mosei.log" % dir_path
         f = open(log_file, "w+")
         sys.stdout = f
     if gc.dataset == "mosi_short":
@@ -240,7 +240,7 @@ def train_model(config_file_name, model_name):
     if gc.cross == 'mosei_new':
     ###for training on iemocap and testing on mosei###
 
-        test_dataset = MoseiNewDataset("C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned", cls='test')
+        test_dataset = MoseiNewDataset("C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned", cls='test')
         test_loader = Data.DataLoader(
             dataset=test_dataset,
             batch_size=gc.batch_size,
@@ -251,7 +251,7 @@ def train_model(config_file_name, model_name):
 
     elif gc.cross == 'iemocap':
     ###for training on mosei and testing on iemocap##
-        test_dataset = MultimodalDataset(cls='test')
+        test_dataset = MultimodalDataset("C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned", cls='test')
         test_loader = Data.DataLoader(
             dataset=test_dataset,
             batch_size=gc.batch_size,
