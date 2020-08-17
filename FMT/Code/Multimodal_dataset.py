@@ -44,7 +44,10 @@ class MultimodalDataset(Data.Dataset):
 
 
     def load_data(self):
-        dataset_path = os.path.join(gc.data_path, gc.dataset + '_data.pkl')
+        if gc.cross == 'iemocap':
+            dataset_path = os.path.join(gc.data_path, gc.cross + '_data.pkl')
+        else:
+            dataset_path = os.path.join(gc.data_path, gc.dataset + '_data.pkl')
         iemocap = pickle.load(open(dataset_path, 'rb'))
 
         for split in iemocap:
