@@ -73,8 +73,10 @@ class MultimodalDataset(Data.Dataset):
                         dataset[split][key].append(iemocap[split][key][i])
             for key in dataset[split]:
                 dataset[split][key] = np.array(dataset[split][key])
-
-        gc.padding_len = dataset['test']['text'].shape[1]
+        if gc.cross == 'iemocap':
+            pass
+        else:
+            gc.padding_len = dataset['test']['text'].shape[1]
         gc.dim_l = dataset['test']['text'].shape[2]
         gc.dim_a = dataset['test']['audio'].shape[2]
         gc.dim_v = dataset['test']['vision'].shape[2]
