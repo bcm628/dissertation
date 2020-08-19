@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import numpy as np
 
-from DANN.util import dataloaders
+from util import dataloaders
 from DANN import params, models, train, test
 from DANN import pretrain
 
