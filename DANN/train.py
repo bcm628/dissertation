@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-from DANN import params
+import params
 
 
 def train(extractor, task_classifier, domain_classifier, optimizer, task_criterion, domain_criterion,

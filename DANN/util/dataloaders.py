@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import DataLoader
 from util.iemocap import MultimodalDataset
 from util.mosei import MoseiNewDataset
-from DANN import params
+import params
 
 
 def get_train_loader(dataset):

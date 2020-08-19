@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
 
-from DANN import params
+import params
 
 
 def test(extractor, task_classifier, domain_classifier, task_criterion, domain_criterion, data_loader, mode, split):
