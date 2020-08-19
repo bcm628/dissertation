@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from util import dataloaders
-from DANN import params, models, train, test
+import params, models, train, test
 from DANN import pretrain
 
 

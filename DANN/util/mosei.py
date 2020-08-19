@@ -3,8 +3,8 @@ import numpy as np
 import torch
 import torch.utils.data as Data
 
-from DANN.util.iemocap import MultimodalSubdata
-from DANN import params
+from util.iemocap import MultimodalSubdata
+import params
 
 
 class MoseiNewDataset(Data.Dataset):
