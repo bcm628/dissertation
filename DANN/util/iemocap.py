@@ -7,7 +7,7 @@ import torch.utils.data as Data
 import torch.nn.functional as F
 
 #from consts import global_consts as gc
-from DANN import params
+import params
 
 class MultimodalSubdata():
     def __init__(self, name="train"):
