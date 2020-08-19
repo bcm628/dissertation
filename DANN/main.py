@@ -7,6 +7,7 @@ import argparse
 import sys
 
 from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -23,9 +24,10 @@ def tsne_embeddings(src_embeddings, tgt_embeddings, save_name, epoch):
     target = target[:min_dim, :, :]
     source = np.reshape(source, (min_dim, -1))
     target = np.reshape(target, (min_dim, -1))
-    tsne = TSNE(n_components=2)
-    src_tsne = tsne.fit_transform(source)
-    tgt_tsne = tsne.fit_transform(target)
+    #tsne = TSNE(n_components=2)
+    pca = PCA(n_components=2)
+    src_tsne = pca.fit_transform(source)
+    tgt_tsne = pca.fit_transform(target)
 
     src_x = [value[0] for value in src_tsne]
     src_y = [value[1] for value in src_tsne]
@@ -35,8 +37,8 @@ def tsne_embeddings(src_embeddings, tgt_embeddings, save_name, epoch):
     fig = plt.figure()
     ax = fig.add_subplot(111)
 
-    ax.scatter(src_x, src_y, c='tab:olive', label='source')
-    ax.scatter(tgt_x, tgt_y, c='tab:cyan', label='target')
+    ax.scatter(src_x, src_y, c='#648fff', label='source')
+    ax.scatter(tgt_x, tgt_y, c='#dc267f', label='target')
     ax.legend()
 
     plt.savefig("{}_{}.pdf".format(save_name, epoch))
@@ -64,7 +66,13 @@ def main(args):
     tgt_valid_loader = dataloaders.get_valid_loader(target)
     tgt_test_loader = dataloaders.get_test_loader(target)
 
-    feature_extractor = models.FeatureExtractor().cuda()
+    if params.modality == 'acoustic':
+        params.proj_dim = 74
+    elif params.modality == 'visual':
+        params.proj_dim = 35
+
+    feature_extractor = models.FeatureExtractor(params.proj_dim)
+
     # #feature_extractor = models.FeatureExtractor(batch_size=params.batch_size,
     #                                             hidden_dim=64,
     #                                             num_layers=2).cuda()
@@ -78,11 +86,11 @@ def main(args):
     task_classifier = models.TaskClassifier(batch_size=params.batch_size,
                                             hidden_dim=params.lstm_dim,
                                             num_layers=params.lstm_layers,
-                                            bidirectional=args.bidirectional).cuda()
+                                            bidirectional=args.bidirectional)
     # #domain_classifier = models.DomainClassifier(batch_size=params.batch_size,
     #                                             hidden_dim=params.rnn_dim,
     #                                             num_layers=params.rnn_layers).cuda()
-    domain_classifier = models.DomainClassifier().cuda()
+    domain_classifier = models.DomainClassifier()
 
 
     task_criterion = nn.BCELoss()
@@ -99,15 +107,21 @@ def main(args):
         print('Epoch: ', epoch)
         train.train(feature_extractor, task_classifier, domain_classifier, optimizer, task_criterion, domain_criterion,
                     src_train_loader, tgt_train_loader, epoch)
-        src_embeddings = test.test(feature_extractor, task_classifier, domain_classifier, task_criterion, src_valid_loader,
-                                   mode='valid,', split="Source Valid")
-        tgt_embeddings = test.test(feature_extractor, task_classifier, domain_classifier, task_criterion, tgt_test_loader,
-                                   mode='test', split="Target Test")
+        src_embeddings = test.test(feature_extractor, task_classifier, domain_classifier, task_criterion, domain_criterion, src_valid_loader,
+                                   mode='valid', split="Source Valid")
+        # tgt_embeddings = test.test(feature_extractor, task_classifier, domain_classifier, task_criterion, domain_criterion, tgt_test_loader,
+        #                            mode='test', split="Target Test")
+        tgt_embeddings = test.test(feature_extractor, task_classifier, domain_classifier, task_criterion,
+                                   domain_criterion, tgt_valid_loader,
+                                   mode='test', split="Target Valid")
 
         if args.save_visuals:
-            if epoch == 0 or epoch+1 % 50 == 0:
+            if epoch == 0 or (epoch+1)% 50 == 0:
                 tsne_embeddings(src_embeddings, tgt_embeddings, args.visual_name, epoch)
 
+        if args.save_model:
+            if epoch == params.epochs-1:
+                torch.save(feature_extractor.state_dict(), 'extractor.pt')
 
 
 
@@ -118,11 +132,12 @@ def parse_arguments(argv):
     parser.add_argument('--target_domain', '-target', type=str, default='mosei', help='Choose target domain: iemocap or mosei')
     parser.add_argument('--epochs', type=int, default=500)
     parser.add_argument('--learning_rate', '-lr', type=float, default=0.0001)
-    parser.add_argument('--modality', '-mod', type=str, default='acoustic', help='specify modality: acoustic or visual.')
-    parser.add_argument('--lstm_layers', type=int, default=2)
+    parser.add_argument('--modality', '-mod', type=str, default='visual', help='specify modality: acoustic or visual.')
+    parser.add_argument('--lstm_layers', type=int, default=3)
     parser.add_argument('--bidirectional', type=bool, default=True, help='Use a unidirectional or bidirectional LSTM classifier')
-    parser.add_argument('--save_visuals', type=bool, default=True, help='Save TSNE visualizations of embeddings')
-    parser.add_argument('--visual_name', type=str, default='attempt_1', help='Choose save name for visualizations. Name will be appended with epoch')
+    parser.add_argument('--save_visuals', type=bool, default=False, help='Save TSNE visualizations of embeddings')
+    parser.add_argument('--visual_name', type=str, default='pca_1', help='Choose save name for visualizations. Name will be appended with epoch')
+    parser.add_argument('--save_model', type=bool, default=False, help='save final feature extractor state dict to disk')
 
     return parser.parse_args()
 

@@ -19,12 +19,12 @@ def train(extractor, task_classifier, domain_classifier, optimizer, task_criteri
 
         #get the data and labels
         src_input, src_labels = src_data
-        src_input = src_input.float().cuda()
-        src_labels = src_labels.float().cuda()
+        src_input = src_input.float()
+        src_labels = src_labels.float()
 
         tgt_input, tgt_labels = tgt_data
-        tgt_input = tgt_input.float().cuda()
-        tgt_labels = tgt_labels.float().cuda()
+        tgt_input = tgt_input.float()
+        tgt_labels = tgt_labels.float()
 
         #TODO: add optimizer scheduler?
         optimizer.zero_grad()
@@ -47,11 +47,11 @@ def train(extractor, task_classifier, domain_classifier, optimizer, task_criteri
         #set up labels for domain classifier
         src_labels1 = torch.zeros(src_input.size()[0])
         src_labels2 = torch.ones(src_input.size()[0])
-        src_domain_labels = torch.stack((src_labels1, src_labels2), dim=1).cuda()
+        src_domain_labels = torch.stack((src_labels1, src_labels2), dim=1)
 
         tgt_labels1 = torch.ones(tgt_input.size()[0])
         tgt_labels2 = torch.zeros(tgt_input.size()[0])
-        tgt_domain_labels = torch.stack((tgt_labels1, tgt_labels2), dim=1).cuda()
+        tgt_domain_labels = torch.stack((tgt_labels1, tgt_labels2), dim=1)
 
 
         #get features from feature extractor

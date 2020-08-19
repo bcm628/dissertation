@@ -50,22 +50,22 @@ class FeatureExtractor_RNN(nn.Module):
 
 class FeatureExtractor(nn.Module):
     """Feedforward DNN feature extractor"""
-    def __init__(self):
+    def __init__(self, proj_dim):
         super(FeatureExtractor, self).__init__()
         # self.batch_size = batch_size
         # self.num_layers = num_layers
-
+        self.proj_dim = proj_dim
         self.fc1 = nn.Linear(params.mod_dim, 128)
         self.fc2 = nn.Linear(128, 256)
-        #self.fc4 = nn.Linear(54, 64)
-        self.fc3 = nn.Linear(256, params.mod_dim)
-        self.dropout = nn.Dropout()
+        #self.fc4 = nn.Linear(256, 256)
+        self.fc3 = nn.Linear(256, proj_dim)
+        self.dropout = nn.Dropout(p=0.2)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
         #x = self.dropout(x)
         x = F.relu(self.fc2(x))
-        #x = F.relu(self.fc4(x))
+        #x = F.relu(self.dropout(self.fc4(x)))
         x = self.fc3(x)
 
         return x
@@ -80,7 +80,7 @@ class TaskClassifier(nn.Module):
         self.num_layers = num_layers
         self.batch_size = batch_size
 
-        self.lstm = nn.LSTM(params.mod_dim,
+        self.lstm = nn.LSTM(params.proj_dim,
                             hidden_dim,
                             num_layers=num_layers,
                             bidirectional=bidirectional,
@@ -136,7 +136,7 @@ class DomainClassifier(nn.Module):
     """Classifies the domain of input samples. Trained to increase loss"""
     def __init__(self):
         super(DomainClassifier, self).__init__()
-        self.fc1 = nn.Linear(params.mod_dim * params.seq_len, 128)
+        self.fc1 = nn.Linear(params.proj_dim * params.seq_len, 128)
         self.fc2 = nn.Linear(128, 256)
         self.fc3 = nn.Linear(256, 2)
         self.dropout = nn.Dropout()
@@ -146,7 +146,7 @@ class DomainClassifier(nn.Module):
         x = GradReverse.grad_reverse(x, constant)
         x = x.view(params.batch_size, -1)
         x = F.relu(self.dropout(self.fc1(x)))
-        x = F.relu(self.fc2(x))
+        x = F.relu(self.dropout(self.fc2(x)))
         x = self.fc3(x)
 
         return self.sig(x)
