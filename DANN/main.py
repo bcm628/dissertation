@@ -13,7 +13,7 @@ import numpy as np
 
 from util import dataloaders
 import params, models, train, test
-from DANN import pretrain
+
 
 
 def tsne_embeddings(src_embeddings, tgt_embeddings, save_name, epoch):

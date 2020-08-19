@@ -73,12 +73,10 @@ def test(extractor, task_classifier, domain_classifier, task_criterion, domain_c
 def eval_data(label_all, output_all, split):
     truths = np.array(label_all)
     results = np.array(output_all)
-    print(results)
     ones_idx = results > 0.5
     zeros_idx = results <= 0.5
     results[ones_idx] = 1
     results[zeros_idx] = 0
-    print(results)
 
     f1_total = {}
     acc_total = {}
