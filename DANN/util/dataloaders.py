@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
-from DANN.util.iemocap import MultimodalDataset
-from DANN.util.mosei import MoseiNewDataset
+from util.iemocap import MultimodalDataset
+from util.mosei import MoseiNewDataset
 from DANN import params
 
 
