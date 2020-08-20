@@ -9,14 +9,14 @@ class global_consts():
 
     save_grad = False
 
-    #dataset = "iemocap"
-    dataset = 'mosei_new'
+    dataset = "iemocap"
+    #dataset = 'mosei_new'
     #data_path = "C:/Users/bcmye/PycharmProjects/dissertation/Data/IEMOCAP_aligned"
     data_path = '/content/drive/My Drive/Colab Notebooks'
     #data_path = "C:/Users/bcmye/PycharmProjects/CMU-MultimodalSDK/data/MOSEI_aligned"
     model_path = "../model/"
-    #cross = 'mosei_new' #indicates which is the testing dataset
-    cross = 'iemocap'
+    cross = 'mosei_new' #indicates which is the testing dataset
+    #cross = 'iemocap'
     #cross = 'none'
 
 #TODO: change this to not none
