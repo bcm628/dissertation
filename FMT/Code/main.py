@@ -13,8 +13,8 @@ import torch.optim as optim
 import torch.utils.data as Data
 from sklearn.metrics import accuracy_score, f1_score
 
-from consts import global_consts as gc
-from model import Net
+from FMT.Code.consts import global_consts as gc
+from FMT.Code.model import Net, AcousticEmbedding, VisualEmbedding
 
 
 
@@ -298,6 +298,15 @@ def train_model(config_file_name, model_name):
     print(net)
     net.to(device)
 
+    proj_dim_a = gc.config['proj_dim_a']
+    proj_dim_v = gc.config['proj_dim_v']
+
+    acoustic_extractor = AcousticEmbedding(input_dims=74, output_dims=proj_dim_a)
+    #visual_extractor = VisualEmbedding(input_dims=35, output_dims=proj_dim_v)
+    acoustic_extractor.load_state_dict(torch.load('/content/drive/My Drive/Colab Notebooks/dissertation/iem_a_extractor.pt'))
+    acoustic_extractor.to(device)
+    #visual_extractor.to(device)
+
 #TODO: change this?
     if gc.dataset == "iemocap" or gc.dataset == "mosei_new":
         criterion = nn.CrossEntropyLoss()
@@ -305,12 +314,18 @@ def train_model(config_file_name, model_name):
         criterion = nn.MSELoss()
 
     optimizer = optim.Adam([
-        {'params': net.proj_a.parameters()},
-        {'params': net.proj_v.parameters()},
         {'params': net.transformer_encoder.parameters()},
         {'params': net.finalW.parameters()},
         {'params': net.gru.parameters(), 'lr': gc.config['gru_lr']}
     ], betas=(0.9, 0.98), eps=1e-09, lr=gc.config['lr'])
+
+    # optimizer = optim.Adam([
+    #     {'params': net.proj_a.parameters()},
+    #     {'params': net.proj_v.parameters()},
+    #     {'params': net.transformer_encoder.parameters()},
+    #     {'params': net.finalW.parameters()},
+    #     {'params': net.gru.parameters(), 'lr': gc.config['gru_lr']}
+    # ], betas=(0.9, 0.98), eps=1e-09, lr=gc.config['lr'])
     start_epoch = 0
     model_path = os.path.join(gc.model_path, gc.dataset + '_' + model_name + '.tar')
     if gc.load_model and os.path.exists(model_path):
@@ -342,6 +357,8 @@ def train_model(config_file_name, model_name):
                     continue
                 words, covarep, facet, inputLen, labels = words.to(device), covarep.to(device), facet.to(
                     device), inputLen.to(device), labels.to(device)
+                covarep = acoustic_extractor(covarep)
+                #facet = visual_extractor(facet)
                 outputs = net(words, covarep, facet, inputLen)
                 outputs = outputs.long()
                 #TODO: do this for mosei as well?
@@ -377,6 +394,10 @@ def train_model(config_file_name, model_name):
                     continue
                 words, covarep, facet, inputLen, labels = words.to(device), covarep.to(device), facet.to(
                     device), inputLen.to(device), labels.to(device)
+
+                covarep = acoustic_extractor(covarep)
+                #facet = visual_extractor(facet)
+
                 outputs = net(words, covarep, facet, inputLen)
                 #TODO: is this necessary for mosei as well?
                 if gc.dataset == 'iemocap' or gc.dataset == 'mosei_new':
