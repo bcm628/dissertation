@@ -40,7 +40,7 @@ class global_consts():
       "cuda": 0,
       "lr": 0.001,
       "epoch_num": 100,
-      "dropout": 0,
+      "dropout": 0.2,
       "seed": 0,
       "gru_lr": 0.001,
       "gru_dropout": 0.2,
@@ -48,11 +48,11 @@ class global_consts():
 
       "n_head": 2,
 
-      "proj_dim_a": 40,
+      "proj_dim_a": 74,
 
-      "proj_dim_v": 80,
+      "proj_dim_v": 35,
 
-      "n_layers": 6,
+      "n_layers": 4,
 
 
       "ff_dim_final": 512,
