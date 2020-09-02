@@ -25,4 +25,6 @@ IEMOCAP data is not publicly available and requires permission to be used. I use
 
 Updates
 -------
-This project is currently unfinished.
+Currently, only IEMOCAP acoustic data consistenly converges using DANN.
+Using DANN as feature extraction for acoustic features improves over cross-corpus testing without domain adaptation.
+Results will be added soon!
